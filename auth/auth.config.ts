@@ -29,19 +29,6 @@ export const authConfig = {
       }
 
       return true
-    },
-    async jwt({ token, user }) {
-      if (user) {
-        token = { ...token, id: user.id }
-      }
-
-      return token
-    },
-    async session({ session, token }: { session: any, token: any }) {
-      if (token.sub && session.user) {
-        session.user.id = token.sub
-      }
-      return session
     }
   },
   providers: []

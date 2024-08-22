@@ -45,3 +45,7 @@ declare type AuthSignUpParams = {
   email: string;
   password: string;
 };
+
+declare type DBUser = {
+  id: string;
+} & AuthSignUpParams;

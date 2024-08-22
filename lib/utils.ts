@@ -12,7 +12,7 @@ export const defaultAuthFormValues = {
   city: "",
   state: "",
   postalCode: "",
-  dateOfBirth: "",
+  dateOfBirth: "1990-05-17",
   ssn: "",
   email: "",
   password: "",

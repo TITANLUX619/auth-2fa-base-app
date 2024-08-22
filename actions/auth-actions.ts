@@ -2,13 +2,11 @@
 
 import { addServerToast } from "@/lib/serverToast";
 import bcryptjs from 'bcryptjs';
-import { PrismaClient } from '@prisma/client';
 import { signIn as authSignIn, signOut as authSignOut } from '@/auth/auth';
-import { DEFAULT_SIGN_IN_REDIRECT, DEFAULT_SIGN_OUT_REDIRECT } from "@/lib/constants/routes";
+import { DEFAULT_SIGN_IN_REDIRECT, DEFAULT_SIGN_OUT_REDIRECT, DEFAULT_SIGN_UP_REDIRECT } from "@/lib/constants/routes";
 import { AuthError } from "next-auth";
-import { redirect, RedirectType } from "next/navigation";
-
-const prisma = new PrismaClient();
+import { redirect } from "next/navigation";
+import prisma from "@/lib/db";
 
 export const signIn = async ({ email, password }: AuthSignInProps) => {
   let redirectUrl;
@@ -56,7 +54,7 @@ export const signIn = async ({ email, password }: AuthSignInProps) => {
 }
 
 export const signOut = async () => {
-  await authSignOut();
+  await authSignOut({ redirect: false });
   redirect(DEFAULT_SIGN_OUT_REDIRECT);
 }
 
@@ -103,7 +101,7 @@ export const signUp = async (formData: AuthSignUpParams) => {
         type: 'success'
       }
     );
-    redirectUrl = DEFAULT_SIGN_IN_REDIRECT;
+    redirectUrl = DEFAULT_SIGN_UP_REDIRECT;
 
   } catch (error) {
     console.log(error);
@@ -122,6 +120,24 @@ export const getUserByEmail = async (email: string) => {
   try {
     const user = await prisma.user.findUnique({
       where: { email },
+    });
+
+    return user;
+
+  } catch (error) {
+    addServerToast(
+      {
+        description: 'User not found.',
+        type: 'error'
+      }
+    )
+  }
+}
+
+export const getUserById = async (id: string) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id },
     });
 
     return user;

@@ -9,10 +9,17 @@ generator client {
   output = "../node_modules/.prisma/client"
 }
 
+// prisma/schema.prisma
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider  = "postgresql"
+  url  	    = env("DATABASE_URL")
+  // uncomment next line if you use Prisma <5.10
+  // directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 model Account {
@@ -28,8 +35,7 @@ model Account {
   scope              String?
   id_token           String? @db.Text
   session_state      String?
- 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
  
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -48,6 +54,7 @@ model User {
   dateOfBirth   DateTime?  
   image         String?
   password      String?
+  role          UserRole  @default(USER)
   accounts      Account[]
  
   @@map("users")

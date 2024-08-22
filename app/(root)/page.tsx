@@ -14,7 +14,7 @@ export default async function Home() {
       </p>
       <div>
         <p className='text-white text-lg'>
-          {JSON.stringify(session)}
+          {JSON.stringify(session?.user)}
         </p>
       </div>
       <form
