@@ -7,7 +7,7 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-	],
+  ],
   prefix: "",
   theme: {
     container: {
@@ -35,6 +35,7 @@ const config = {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -51,6 +52,31 @@ const config = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(120, 40%, 50%)", // Verde
+          25: "#F6FEF9",
+          50: "#ECFDF3",
+          100: "#D1FADF",
+          600: "#039855",
+          700: "#027A48",
+          900: "#054F31",
+          foreground: "hsl(120, 100%, 95%)", // Verde claro
+        },
+        warning: {
+          DEFAULT: "hsl(45 60% 70%)",
+          foreground: "hsl(210, 40%, 98%)",
+        },
+
+        info: {
+          DEFAULT: "hsl(210 40% 70%)",
+          foreground: "hsl(210, 40%, 98%)",
+        },
+        toast: {
+          background: "hsl(0, 0%, 100%)",
+          foreground: "hsl(222.2, 84%, 4.9%)",
+          border: "hsl(214.3, 31.8%, 91.4%)",
+          action: "hsl(222.2, 47.4%, 11.2%)",
         },
       },
       borderRadius: {
