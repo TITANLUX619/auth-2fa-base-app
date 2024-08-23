@@ -7,7 +7,7 @@ const AuthCardHeader = ({ label }: AuthHeaderProps) => {
       <h1 className={cn('text-3xl font-semibold mr-3')}>
         🔑 Auth
       </h1>
-      <p className='text-muted-foreground text-sm text-white'>
+      <p className='text-muted-foreground text-sm text-grey'>
         {label}
       </p>
     </div>

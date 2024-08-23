@@ -24,13 +24,17 @@ export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
   adapter: PrismaAdapter(prisma),
   callbacks: {
     ...authConfig.callbacks,
-    async signIn({ user }) {
+    async signIn({ user, account }) {
+      if (account?.provider !== 'credentials') {
+        return true
+      }
+
       const existingUser = await getUserById(user.id as string)
-      /* 
-            if (!existingUser || !user.emailVerified as boolean) {
-              return false
-            }
-       */
+
+      if (!existingUser || !user.emailVerified as boolean) {
+        return false
+      }
+
       return true
     },
     async jwt({ token }) {

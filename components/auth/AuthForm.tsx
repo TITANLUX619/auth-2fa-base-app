@@ -1,7 +1,6 @@
 'use client'
 
-import React, { startTransition, useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useTransition } from 'react'
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form } from "@/components/ui/form"
@@ -13,11 +12,12 @@ import { defaultAuthFormValues } from '@/lib/utils';
 import AuthCardWrapper from './AuthCardWrapper';
 import AuthInput from './AuthInput';
 import { signIn, signUp } from '@/actions/auth-actions';
-
-
+import { toast } from 'sonner'
+import useToast from '@/hooks/useToast'
+import { useRouter } from 'next/navigation'
 
 const AuthForm = ({ type }: AuthFormProps) => {
-  const router = useRouter();
+  const router = useRouter()
   const formSchema = authFormSchema(type);
   const [isPending, startTransition] = useTransition();
 
@@ -27,8 +27,6 @@ const AuthForm = ({ type }: AuthFormProps) => {
   })
 
   async function onSubmit(formData: z.infer<typeof formSchema>) {
-    console.log('form data', formData);
-
     try {
 
       if (type === 'sign-up') {
@@ -43,20 +41,33 @@ const AuthForm = ({ type }: AuthFormProps) => {
           password: formData.password
         }
 
-        startTransition(() => {
-          signUp(userData)
+        startTransition(async () => {
+          const result = await signUp(userData)
+
+          if (result && 'error' in result) toast.error(result.error)
+
+          if (result && 'type' in result && 'message' in result) {
+            useToast({ type: result?.type, message: result?.message })
+            if (result.type === 'info') router.push('/sign-in')
+          }
         })
-
-
 
       }
 
       if (type === 'sign-in') {
-        startTransition(() => {
-          signIn({
+        startTransition(async () => {
+          const result = await signIn({
             email: formData.email,
             password: formData.password
           })
+
+
+          if (result && 'error' in result) toast.error(result.error)
+
+          if (result && 'type' in result && 'message' in result) {
+            useToast({ type: result?.type, message: result?.message })
+            if (result.type === 'success') router.push('/')
+          }
         })
       }
 

@@ -49,3 +49,23 @@ declare type AuthSignUpParams = {
 declare type DBUser = {
   id: string;
 } & AuthSignUpParams;
+
+declare enum AuthResultCode {
+  InvalidCredentials = 'INVALID_CREDENTIALS',
+  InvalidSubmission = 'INVALID_SUBMISSION',
+  UserAlreadyExists = 'USER_ALREADY_EXISTS',
+  EmailNotVerified = 'EMAIL_NOT_VERIFIED',
+  VerificationEmailSent = 'VERIFICATION_EMAIL_SENT',
+  UnknownError = 'UNKNOWN_ERROR',
+  UserCreated = 'USER_CREATED',
+  UserLoggedIn = 'USER_LOGGED_IN'
+}
+
+declare enum VerificationTokenResultCode {
+  TokenNotFound = 'TOKEN_NOT_FOUND',
+  TokenHasExpired = 'TOKEN_HAS_EXPIRED',
+  UserDoesNotExist = 'USER_DOES_NOT_EXIST',
+  UserVerified = 'USER_VERIFIED'
+}
+
+
