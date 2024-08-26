@@ -17,3 +17,12 @@ export const getUserById = async (id: string) => {
 
   return user;
 }
+
+export const updateUserImage = async (email: string, image: string) => {
+  const user = await prisma.user.update({
+    where: { email },
+    data: { image },
+  });
+
+  return user;
+}

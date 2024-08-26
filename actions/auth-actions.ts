@@ -15,6 +15,7 @@ import { delete2FATokenById, generate2FAToken, get2FATokenByEmail, get2FATokenBy
 import { delete2FAConfirmationById, generate2FAConfirmation, get2FAConfirmationByUserId } from './two-factor-confirmation';
 import { baseURL } from '@/lib/constants/routes';
 import prisma from '@/lib/db';
+import { getUserByEmail } from './user-actions';
 
 export const signIn = async (formData: AuthSignInProps): ServerActionResult<AuthSignInResponse> => {
 
@@ -128,22 +129,6 @@ export const signUp = async (formData: AuthSignUpParams): ServerActionResult<nul
     return { type: 'error', message: 'Something went wrong, please try again!' };
 
   }
-}
-
-export const getUserByEmail = async (email: string) => {
-  const user = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  return user;
-}
-
-export const getUserById = async (id: string) => {
-  const user = await prisma.user.findUnique({
-    where: { id },
-  });
-
-  return user;
 }
 
 const resend = new Resend(process.env.RESEND_API_KEY);

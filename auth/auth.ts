@@ -2,12 +2,12 @@ import NextAuth, { type DefaultSession } from 'next-auth'
 import { authConfig } from './auth.config'
 import Credentials from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
-import { getUserByEmail, getUserById } from '@/actions/auth-actions'
 import { z } from 'zod'
 import bcryptjs from 'bcryptjs'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import prisma from '@/lib/db'
 import { delete2FAConfirmationById, get2FAConfirmationByUserId } from '@/actions/two-factor-confirmation'
+import { getUserByEmail, getUserById, updateUserImage } from '@/actions/user-actions'
 
 declare module "next-auth" {
   interface Session {
@@ -25,12 +25,16 @@ export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
   adapter: PrismaAdapter(prisma),
   callbacks: {
     ...authConfig.callbacks,
-    async signIn({ user, account }) {
+    async signIn({ user, account, profile }) {
+      const existingUser = await getUserById(user.id as string)
+
       if (account?.provider !== 'credentials') {
+        if (existingUser && !existingUser.image) {
+          await updateUserImage(user.email as string, profile?.picture)
+
+        }
         return true
       }
-
-      const existingUser = await getUserById(user.id as string)
 
       if (!existingUser || !user.emailVerified as boolean) {
         return false
