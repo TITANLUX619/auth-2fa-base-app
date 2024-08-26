@@ -1,9 +1,10 @@
 import VerificationCard from '@/components/auth/VerifyEmailCard';
 import React from 'react'
 
-export default async function NewVerificationPage() {
-
+const NewVerificationPage = () => {
   return (
     <VerificationCard />
   )
 }
+
+export default NewVerificationPage

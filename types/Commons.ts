@@ -7,9 +7,10 @@ declare type ToastProps =
   }
 
 declare type Result<DataType> = {
-  type: 'error' | 'success' | 'info' | 'warning';
+  type: 'error' | 'success' | 'info' | 'warning' | 'default';
   message: string;
+  code?: string;
   data?: DataType;
 }
 
-declare type ServerActionResult<DataType> = Promise<Result<DataType> | { error: string } | undefined>
+declare type ServerActionResult<DataType> = Promise<Result<DataType>>

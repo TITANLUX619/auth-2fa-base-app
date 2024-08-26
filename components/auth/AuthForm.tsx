@@ -15,11 +15,13 @@ import { signIn, signUp } from '@/actions/auth-actions';
 import { toast } from 'sonner'
 import useToast from '@/hooks/useToast'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 const AuthForm = ({ type }: AuthFormProps) => {
   const router = useRouter()
   const formSchema = authFormSchema(type);
   const [isPending, startTransition] = useTransition();
+  const [show2FA, setShow2FA] = React.useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -28,7 +30,6 @@ const AuthForm = ({ type }: AuthFormProps) => {
 
   async function onSubmit(formData: z.infer<typeof formSchema>) {
     try {
-
       if (type === 'sign-up') {
         const userData = {
           firstName: formData.firstName!,
@@ -44,12 +45,10 @@ const AuthForm = ({ type }: AuthFormProps) => {
         startTransition(async () => {
           const result = await signUp(userData)
 
-          if (result && 'error' in result) toast.error(result.error)
+          useToast({ type: result?.type, message: result?.message })
 
-          if (result && 'type' in result && 'message' in result) {
-            useToast({ type: result?.type, message: result?.message })
-            if (result.type === 'info') router.push('/sign-in')
-          }
+          if (result.type === 'info') router.push('/sign-in')
+
         })
 
       }
@@ -58,16 +57,18 @@ const AuthForm = ({ type }: AuthFormProps) => {
         startTransition(async () => {
           const result = await signIn({
             email: formData.email,
-            password: formData.password
+            password: formData.password,
+            twoFactorCode: formData['2FACode']
           })
 
+          useToast({ type: result?.type, message: result?.message })
 
-          if (result && 'error' in result) toast.error(result.error)
-
-          if (result && 'type' in result && 'message' in result) {
-            useToast({ type: result?.type, message: result?.message })
-            if (result.type === 'success') router.push('/')
+          if (result.data?.twoFactorEnabled) {
+            setShow2FA(true)
           }
+
+          if (result.type === 'success') router.push('/')
+
         })
       }
 
@@ -75,6 +76,8 @@ const AuthForm = ({ type }: AuthFormProps) => {
       console.log(error);
     }
   }
+
+  const authButtonLabel = type === 'sign-up' ? 'Sign up' : show2FA ? 'Send code' : 'Sign in'
 
   return (
     <div>
@@ -145,26 +148,50 @@ const AuthForm = ({ type }: AuthFormProps) => {
                 </div>
               </>
             )}
-
-            <AuthInput
-              id='signin-email'
-              control={form.control}
-              type='text'
-              name='email'
-              label="Email"
-              placeholder='Enter your email'
-              disabled={isPending}
-            />
-            <AuthInput
-              id='signin-password'
-              control={form.control}
-              type='password'
-              name='password'
-              label="Password"
-              placeholder='Enter your password'
-              disabled={isPending}
-            />
-
+            {show2FA
+              ? <AuthInput
+                id='signin-2fa-code'
+                control={form.control}
+                type='text'
+                name='2FACode'
+                label="2FA Code"
+                placeholder='Enter code'
+                disabled={isPending}
+              />
+              : (
+                <>
+                  <AuthInput
+                    id='signin-email'
+                    control={form.control}
+                    type='text'
+                    name='email'
+                    label="Email"
+                    placeholder='Enter your email'
+                    disabled={isPending}
+                  />
+                  <div>
+                    <AuthInput
+                      id='signin-password'
+                      control={form.control}
+                      type='password'
+                      name='password'
+                      label="Password"
+                      placeholder='Enter your password'
+                      disabled={isPending}
+                    />
+                    <Button
+                      size='sm'
+                      variant='link'
+                      asChild
+                    >
+                      <Link href='/reset-password' onClick={() => console.log('Back')}
+                      >
+                        Forgot password?
+                      </Link>
+                    </Button>
+                  </div>
+                </>
+              )}
             <div className="flex flex-col gap-4">
               <Button type="submit" onClick={() => onSubmit(form.getValues())} disabled={isPending}>
                 {isPending ? (
@@ -172,8 +199,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
                     <Loader2 size={20} className="animate-spin" /> &nbsp;
                     Loading...
                   </>
-                ) : type === 'sign-in'
-                  ? 'Sign In' : 'Sign Up'}
+                ) : authButtonLabel}
               </Button>
             </div>
           </form>

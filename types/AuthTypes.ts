@@ -33,6 +33,11 @@ declare type AuthInfoMessageProps = {
 declare type AuthSignInProps = {
   email: string;
   password: string;
+  twoFactorCode?: string;
+}
+
+declare type AuthSignInResponse = {
+  twoFactorEnabled: boolean;
 }
 
 declare type AuthSignUpParams = {
@@ -45,6 +50,15 @@ declare type AuthSignUpParams = {
   email: string;
   password: string;
 };
+
+declare type ResetPasswordProps = {
+  email: string;
+}
+
+declare type NewPasswordProps = {
+  newPassword: string;
+  token?: string;
+}
 
 declare type DBUser = {
   id: string;

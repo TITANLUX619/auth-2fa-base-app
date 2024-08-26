@@ -7,6 +7,7 @@ import { z } from 'zod'
 import bcryptjs from 'bcryptjs'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import prisma from '@/lib/db'
+import { delete2FAConfirmationById, get2FAConfirmationByUserId } from '@/actions/two-factor-confirmation'
 
 declare module "next-auth" {
   interface Session {
@@ -33,6 +34,16 @@ export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
 
       if (!existingUser || !user.emailVerified as boolean) {
         return false
+      }
+
+      if (existingUser.twoFactorEnabled) {
+        const twoFactorConfirmation = await get2FAConfirmationByUserId(existingUser.userId)
+
+        if (!twoFactorConfirmation) {
+          return false
+        }
+
+        await delete2FAConfirmationById(twoFactorConfirmation.id)
       }
 
       return true

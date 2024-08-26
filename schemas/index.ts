@@ -11,5 +11,16 @@ export const authFormSchema = (type: 'sign-in' | 'sign-up') =>
     dateOfBirth: type === 'sign-in' ? z.string().optional() : z.string().min(3),
     // both
     email: z.string().email(),
-    password: z.string(),
+    password: type === 'sign-in' ? z.string() : z.string().min(8),
+    code: z.string().optional(),
+  });
+
+export const resetPasswordFormSchema =
+  z.object({
+    email: z.string().email(),
+  });
+
+export const newPasswordFormSchema =
+  z.object({
+    newPassword: z.string().min(8),
   });

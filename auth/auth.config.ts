@@ -26,6 +26,7 @@ export const authConfig = {
       }
 
       if (!isLoggedIn && !isPublicRoute) {
+
         return Response.redirect(new URL(DEFAULT_SIGN_OUT_REDIRECT, nextUrl))
       }
 
