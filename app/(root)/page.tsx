@@ -12,17 +12,6 @@ export default async function Home() {
       <p className='text-2xl text-white'>
         Scaffolding app using Next Auth v5 and 2FA
       </p>
-      <div className='flex flex-row gap-4'>
-        <Button
-          className='w-full font-normal'
-          size='sm'
-          asChild
-        >
-          <Link href='/user-menu'>
-            User Menu
-          </Link>
-        </Button>
-      </div>
     </div>
   );
 }
