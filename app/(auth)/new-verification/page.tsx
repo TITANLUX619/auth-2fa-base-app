@@ -1,9 +1,11 @@
 import VerificationCard from '@/components/auth/VerifyEmailCard';
-import React from 'react'
+import React, { Suspense } from 'react'
 
 const NewVerificationPage = () => {
   return (
-    <VerificationCard />
+    <Suspense>
+      <VerificationCard />
+    </Suspense>
   )
 }
 
