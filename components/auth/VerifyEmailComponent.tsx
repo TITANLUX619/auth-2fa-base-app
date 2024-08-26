@@ -7,15 +7,16 @@ import { useSearchParams } from 'next/navigation';
 import React, { useEffect } from 'react'
 import { BeatLoader } from 'react-spinners'
 
-function VerificationCard() {
+function VerifyEmailComponent() {
   const searchParams = useSearchParams()
   const verificationToken = searchParams.get('token')
+  const addToast = useToast()
 
   const onSubmit = async () => {
     if (verificationToken) {
       const result = await verifyToken(verificationToken)
 
-      useToast({ type: result?.type, message: result?.message })
+      addToast({ type: result?.type, message: result?.message })
     }
   }
 
@@ -41,4 +42,4 @@ function VerificationCard() {
   )
 }
 
-export default VerificationCard
+export default VerifyEmailComponent

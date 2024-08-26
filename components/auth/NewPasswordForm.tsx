@@ -19,6 +19,7 @@ const NewPasswordForm = () => {
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams()
   const token = searchParams.get('token') || undefined
+  const addToast = useToast();
 
   const form = useForm<z.infer<typeof newPasswordFormSchema>>({
     resolver: zodResolver(newPasswordFormSchema),
@@ -29,12 +30,12 @@ const NewPasswordForm = () => {
     try {
       startTransition(async () => {
         const result = await setNewPassword({
-          newPassword: formData.password,
+          newPassword: formData.newPassword,
           token: token
 
         })
 
-        useToast({ type: result?.type, message: result?.message })
+        addToast({ type: result?.type, message: result?.message })
 
         if (result.type === 'success') router.push('/')
 

@@ -22,6 +22,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
   const formSchema = authFormSchema(type);
   const [isPending, startTransition] = useTransition();
   const [show2FA, setShow2FA] = React.useState(false)
+  const addToast = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,7 +46,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
         startTransition(async () => {
           const result = await signUp(userData)
 
-          useToast({ type: result?.type, message: result?.message })
+          addToast({ type: result?.type, message: result?.message })
 
           if (result.type === 'info') router.push('/sign-in')
 
@@ -58,10 +59,10 @@ const AuthForm = ({ type }: AuthFormProps) => {
           const result = await signIn({
             email: formData.email,
             password: formData.password,
-            twoFactorCode: formData['2FACode']
+            twoFactorCode: formData['twoFactorCode']
           })
 
-          useToast({ type: result?.type, message: result?.message })
+          addToast({ type: result?.type, message: result?.message })
 
           if (result.data?.twoFactorEnabled) {
             setShow2FA(true)
@@ -153,7 +154,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
                 id='signin-2fa-code'
                 control={form.control}
                 type='text'
-                name='2FACode'
+                name='twoFactorCode'
                 label="2FA Code"
                 placeholder='Enter code'
                 disabled={isPending}

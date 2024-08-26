@@ -1,6 +1,19 @@
 'use server';
 
 import prisma from '@/lib/db';
+import { auth } from "@/auth/auth";
+
+export const currentUser = async () => {
+  const session = await auth();
+
+  return session?.user;
+};
+
+export const currentRole = async () => {
+  const session = await auth();
+
+  return session?.user?.role;
+};
 
 export const getUserByEmail = async (email: string) => {
   const user = await prisma.user.findUnique({
@@ -18,11 +31,12 @@ export const getUserById = async (id: string) => {
   return user;
 }
 
-export const updateUserImage = async (email: string, image: string) => {
+export const updateUser = async (email: string, data: any) => {
   const user = await prisma.user.update({
     where: { email },
-    data: { image },
+    data: { ...data },
   });
 
   return user;
 }
+

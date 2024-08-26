@@ -11,7 +11,7 @@ import { authFormSchema, newPasswordFormSchema, resetPasswordFormSchema } from '
 import { ResetEmailTemplate } from '@/components/auth/ResetEmailTemplate';
 import { deletePasswordResetTokenById, generateResetPasswordToken, getPasswordResetTokenByToken } from './reset-token-actions';
 import { TwoFactorTokenEmailTemplate } from '@/components/auth/TwoFactorTokenEmailTemplate';
-import { delete2FATokenById, generate2FAToken, get2FATokenByEmail, get2FATokenByToken } from './two-factor-token-actions';
+import { delete2FATokenById, generate2FAToken, get2FATokenByEmail } from './two-factor-token-actions';
 import { delete2FAConfirmationById, generate2FAConfirmation, get2FAConfirmationByUserId } from './two-factor-confirmation';
 import { baseURL } from '@/lib/constants/routes';
 import prisma from '@/lib/db';
@@ -208,7 +208,7 @@ export const setNewPassword = async ({ newPassword, token }: NewPasswordProps): 
     return { type: 'error', message: 'Invalid token!' };
   }
 
-  const hasExpired = new Date() > new Date(existingToken.expiresAt);
+  const hasExpired = new Date() > new Date(existingToken.expires);
 
   if (hasExpired) {
     return { type: 'error', message: 'Token has expired!' };

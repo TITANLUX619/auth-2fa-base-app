@@ -1,4 +1,4 @@
-import NextAuth, { type DefaultSession } from 'next-auth'
+import NextAuth from 'next-auth'
 import { authConfig } from './auth.config'
 import Credentials from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
@@ -7,20 +7,10 @@ import bcryptjs from 'bcryptjs'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import prisma from '@/lib/db'
 import { delete2FAConfirmationById, get2FAConfirmationByUserId } from '@/actions/two-factor-confirmation'
-import { getUserByEmail, getUserById, updateUserImage } from '@/actions/user-actions'
+import { getUserByEmail, getUserById, updateUser } from '@/actions/user-actions'
+import { getAccountByUserId } from '@/actions/account-actions'
 
-declare module "next-auth" {
-  interface Session {
-    user: {
-      role: string
-    } & DefaultSession["user"]
-  }
-  interface User {
-    emailVerified: boolean
-  }
-}
-
-export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
+export const { auth, signIn, signOut, unstable_update, handlers: { GET, POST } } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(prisma),
   callbacks: {
@@ -30,18 +20,18 @@ export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
 
       if (account?.provider !== 'credentials') {
         if (existingUser && !existingUser.image) {
-          await updateUserImage(user.email as string, profile?.picture)
+          await updateUser(user.email as string, profile?.picture)
 
         }
         return true
       }
 
-      if (!existingUser || !user.emailVerified as boolean) {
+      if (!existingUser || !existingUser.emailVerified) {
         return false
       }
 
       if (existingUser.twoFactorEnabled) {
-        const twoFactorConfirmation = await get2FAConfirmationByUserId(existingUser.userId)
+        const twoFactorConfirmation = await get2FAConfirmationByUserId(existingUser.id)
 
         if (!twoFactorConfirmation) {
           return false
@@ -53,15 +43,21 @@ export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
       return true
     },
     async jwt({ token }) {
-      if (!token.sub) return token;
+      const existingUser = await getUserById(token.sub as string);
 
-      const dbUser = await getUserById(token.sub)
+      if (!existingUser) return token;
 
-      if (!dbUser) return token
+      const existingAccount = await getAccountByUserId(
+        existingUser.id
+      );
 
-      token = { ...token, role: dbUser.role }
+      token.isOAuth = !!existingAccount;
+      token.name = existingUser.name;
+      token.email = existingUser.email;
+      token.role = existingUser.role;
+      token.isTwoFactorEnabled = existingUser.twoFactorEnabled;
 
-      return token
+      return token;
     },
     async session({ session, token }: { session: any, token: any }) {
       if (token.sub && session.user) {
@@ -72,7 +68,16 @@ export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
         session.user.role = token.role
       }
 
-      console.log('session', session);
+
+      if (session.user) {
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+      }
+
+      if (session.user) {
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.isOAuth = token.isOAuth as boolean;
+      }
 
       return session
     }
@@ -91,17 +96,13 @@ export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data
 
-          const user = await getUserByEmail(email)
+          const existingUser = await getUserByEmail(email)
 
-          if (!user) return null
+          if (!existingUser) return null
 
-          const passwordsMatch = await bcryptjs.compare(password, user.password)
+          const passwordsMatch = await bcryptjs.compare(password, existingUser.password as string)
 
-          if (passwordsMatch) {
-            return user
-          } else {
-            return null
-          }
+          if (passwordsMatch) return existingUser
         }
 
         return null
@@ -110,7 +111,7 @@ export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
     GoogleProvider({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
-      allowDangerousEmailAccountLinking: true
+      /* allowDangerousEmailAccountLinking: true */
     })
   ]
 })

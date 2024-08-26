@@ -2,14 +2,14 @@
 
 import React from 'react'
 import { useRouter } from 'next/navigation'
-import UserMenuButton from './auth/UserMenuButton'
+import UserMenuButton from './auth/UserMenu'
 
 const Navbar = () => {
   const router = useRouter()
 
   return (
     <nav className="bg-gray-800">
-      <div className="mx-3 my-1">
+      <div className="ml-3 mr-4 my-1">
         <div className="relative flex items-center justify-between h-16">
           <div className="flex-1 flex items-center justify-start">
             <div

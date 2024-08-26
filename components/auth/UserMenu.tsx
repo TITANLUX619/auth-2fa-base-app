@@ -3,45 +3,49 @@
 import React from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { useSession } from '@/hooks/useSession'
 import { FaUser } from 'react-icons/fa'
 import SignOutButton from './SignOutButton'
 import { Button } from '../ui/button'
 import { useRouter } from 'next/navigation'
+import { ExitIcon } from '@radix-ui/react-icons'
+import { useCurrentUser } from '@/hooks/useCurrentUser'
 
-const UserMenuButton = () => {
-  const { session } = useSession()
+const UserMenu = () => {
+  const user = useCurrentUser()
   const router = useRouter()
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
-          <AvatarImage src={session?.user.image || ''} />
+          <AvatarImage src={user?.image || ''} />
           <AvatarFallback>
             <FaUser className='text-white' />
-            {session?.user.name?.charAt(0)}
+            {user?.name?.charAt(0)}
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <SignOutButton />
-        </DropdownMenuItem>
-        <DropdownMenuItem>
           <Button
             className='w-full font-normal'
             size='sm'
-            onClick={() => { router.push('/user-menu') }}
+            onClick={() => { router.push('/settings') }}
           >
             <p>
               User Menu
             </p>
           </Button>
         </DropdownMenuItem>
+        <SignOutButton>
+          <DropdownMenuItem className='cursor-pointer'>
+            <ExitIcon className='w-4 h-4 mr-2' />
+            Log Out
+          </DropdownMenuItem>
+        </SignOutButton>
       </DropdownMenuContent>
     </DropdownMenu>
   )
 }
 
-export default UserMenuButton
+export default UserMenu

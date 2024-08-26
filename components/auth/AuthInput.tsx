@@ -3,21 +3,18 @@ import { FormControl, FormField, FormLabel, FormMessage } from '@/components/ui/
 import { Input } from '@/components/ui/input'
 import { Control, FieldPath } from 'react-hook-form'
 import { z } from 'zod'
-import { authFormSchema } from '@/schemas'
-
-const formSchema = authFormSchema('sign-up')
 
 interface AuthInput {
   id: string,
-  control: Control<z.infer<typeof formSchema>>,
+  control: Control<z.infer<any>>,
   type: string,
-  name: FieldPath<z.infer<typeof formSchema>>,
+  name: FieldPath<z.infer<any>>,
   label: string,
   placeholder?: string
   disabled?: boolean
 }
 
-const AuthInput = ({ id, control, type, name, label, placeholder, disabled = false }: AuthInput) => {
+const AuthInput = ({ id, control, type, name, label, placeholder }: AuthInput) => {
   return (
     <FormField
       control={control}

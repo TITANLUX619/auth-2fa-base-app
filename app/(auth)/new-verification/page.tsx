@@ -1,10 +1,10 @@
-import VerificationCard from '@/components/auth/VerifyEmailCard';
+import VerifyEmailComponent from '@/components/auth/VerifyEmailComponent';
 import React, { Suspense } from 'react'
 
 const NewVerificationPage = () => {
   return (
     <Suspense>
-      <VerificationCard />
+      <VerifyEmailComponent />
     </Suspense>
   )
 }

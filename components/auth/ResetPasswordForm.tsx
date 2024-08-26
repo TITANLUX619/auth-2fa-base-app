@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation'
 const ResetPasswordForm = () => {
   const router = useRouter()
   const [isPending, startTransition] = useTransition();
+  const addToast = useToast();
 
   const form = useForm<z.infer<typeof resetPasswordFormSchema>>({
     resolver: zodResolver(resetPasswordFormSchema),
@@ -30,7 +31,7 @@ const ResetPasswordForm = () => {
           email: formData.email,
         })
 
-        useToast({ type: result?.type, message: result?.message })
+        addToast({ type: result?.type, message: result?.message })
 
         if (result.type === 'success') router.push('/')
 

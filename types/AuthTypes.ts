@@ -60,6 +60,10 @@ declare type NewPasswordProps = {
   token?: string;
 }
 
+declare type AuthSignOutButtonProps = {
+  children: React.ReactNode;
+}
+
 declare type DBUser = {
   id: string;
 } & AuthSignUpParams;
