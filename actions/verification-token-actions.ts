@@ -1,5 +1,7 @@
 'use server';
 
+import prisma from '@/lib/db';
+
 import { getUserByEmail } from "./user-actions";
 import { v4 as uuid } from 'uuid';
 

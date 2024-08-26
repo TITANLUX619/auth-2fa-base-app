@@ -1,3 +1,5 @@
+import prisma from '@/lib/db';
+
 export const generate2FAConfirmation = async (userId: string) => {
   const twoFactorToken = await prisma.twoFactorConfirmation.create({
     data: {

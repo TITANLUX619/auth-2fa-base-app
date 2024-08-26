@@ -1,6 +1,7 @@
 'use server';
 
 import crypto from 'crypto';
+import prisma from '@/lib/db';
 
 export const generate2FAToken = async (email: string) => {
   const token = crypto.randomInt(100_000, 1_000_000).toString();

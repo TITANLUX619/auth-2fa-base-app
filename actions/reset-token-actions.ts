@@ -1,6 +1,7 @@
 'use server';
 
 import { v4 as uuid } from 'uuid';
+import prisma from '@/lib/db';
 
 export const generateResetPasswordToken = async (email: string) => {
   const token = uuid();
@@ -8,11 +9,7 @@ export const generateResetPasswordToken = async (email: string) => {
 
   const existingToken = await getPasswordResetTokenByEmail(email);
 
-  if (existingToken) {
-    await prisma.resetToken.delete({
-      where: { id: existingToken.id }
-    })
-  }
+  if (existingToken) deletePasswordResetTokenById(existingToken.id);
 
   const passwordResetToken = await prisma.resetToken.create({
     data: {
