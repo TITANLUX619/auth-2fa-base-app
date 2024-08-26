@@ -13,6 +13,7 @@ import { deletePasswordResetTokenById, generateResetPasswordToken, getPasswordRe
 import { TwoFactorTokenEmailTemplate } from '@/components/auth/TwoFactorTokenEmailTemplate';
 import { delete2FATokenById, generate2FAToken, get2FATokenByEmail, get2FATokenByToken } from './two-factor-token-actions';
 import { delete2FAConfirmationById, generate2FAConfirmation, get2FAConfirmationByUserId } from './two-factor-confirmation';
+import { baseURL } from '@/lib/constants/routes';
 import prisma from '@/lib/db';
 
 export const signIn = async (formData: AuthSignInProps): ServerActionResult<AuthSignInResponse> => {
@@ -151,7 +152,7 @@ export const sendVerificationEmail = async (
   email: string,
   token: string
 ) => {
-  const confirmLink = `http://localhost:3000/new-verification?token=${token}`;
+  const confirmLink = `${baseURL}/new-verification?token=${token}`;
 
   try {
     await resend.emails.send({
@@ -193,7 +194,7 @@ export const sendResetPasswordEmail = async (
   email: string,
   token: string
 ) => {
-  const resetLink = `http://localhost:3000/new-password?token=${token}`;
+  const resetLink = `${baseURL}/new-password?token=${token}`;
 
   try {
     await resend.emails.send({
