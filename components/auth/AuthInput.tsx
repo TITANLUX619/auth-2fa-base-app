@@ -29,7 +29,7 @@ const AuthInput = ({ id, control, type, name, label, placeholder }: AuthInput) =
               <Input
                 id={id}
                 placeholder={placeholder}
-                className="input-class"
+                className={`input-class ${type === 'date' ? 'justify-end' : ''}`}
                 type={type}
                 {...field}
               />

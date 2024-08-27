@@ -81,7 +81,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
   const authButtonLabel = type === 'sign-up' ? 'Sign up' : show2FA ? 'Send code' : 'Sign in'
 
   return (
-    <div>
+    <section className="auth-form">
       <AuthCardWrapper
         headerLabel='Welcome back'
         backbuttonLabel={type === 'sign-in' ? 'Don’t have an account? Sign up' : 'Already have an account? Sign in'}
@@ -128,24 +128,28 @@ const AuthForm = ({ type }: AuthFormProps) => {
                   placeholder='Enter your city'
                   disabled={isPending}
                 />
-                <div className="flex gap-4">
-                  <AuthInput
-                    id='signin-postalCode'
-                    control={form.control}
-                    type='text'
-                    name='postalCode'
-                    label="Postal Code"
-                    placeholder='Enter your specific Postal Code'
-                    disabled={isPending}
-                  />
-                  <AuthInput
-                    id='signin-dateOfBirth'
-                    control={form.control}
-                    type='date'
-                    name='dateOfBirth'
-                    label="Date of Birth"
-                    disabled={isPending}
-                  />
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="w-full sm:w-1/2">
+                    <AuthInput
+                      id='signin-postalCode'
+                      control={form.control}
+                      type='text'
+                      name='postalCode'
+                      label="Postal Code"
+                      placeholder='Enter your specific Postal Code'
+                      disabled={isPending}
+                    />
+                  </div>
+                  <div className="w-full sm:w-1/2">
+                    <AuthInput
+                      id='signin-dateOfBirth'
+                      control={form.control}
+                      type='date'
+                      name='dateOfBirth'
+                      label="Date of Birth"
+                      disabled={isPending}
+                    />
+                  </div>
                 </div>
               </>
             )}
@@ -206,7 +210,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
           </form>
         </Form>
       </AuthCardWrapper>
-    </div>
+    </section>
   )
 }
 

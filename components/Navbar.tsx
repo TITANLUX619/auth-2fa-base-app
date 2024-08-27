@@ -8,19 +8,17 @@ const Navbar = () => {
   const router = useRouter()
 
   return (
-    <nav className="bg-gray-800">
-      <div className="ml-3 mr-4 my-1">
-        <div className="relative flex items-center justify-between h-16">
-          <div className="flex-1 flex items-center justify-start">
-            <div
-              onClick={() => { router.push('/') }}
-              className="flex-shrink-0 flex items-center justify-center text-white text-3xl cursor-pointer"
-            >
-              🔑 Auth
-            </div>
-            <div className="flex-1 flex items-center justify-end">
-              <UserMenuButton />
-            </div>
+    <nav className="bg-gray-800 w-full fixed top-0 left-0 z-50">
+      <div className="w-full max-w-full px-4 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <div
+            onClick={() => { router.push('/') }}
+            className="text-white text-3xl cursor-pointer"
+          >
+            🔑 Auth
+          </div>
+          <div className="flex items-center">
+            <UserMenuButton />
           </div>
         </div>
       </div>

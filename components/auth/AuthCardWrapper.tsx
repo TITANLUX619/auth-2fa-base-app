@@ -8,7 +8,7 @@ const AuthCardWrapper = (
   { children, headerLabel, backbuttonLabel, backButtonHref, showSocial }: AuthCardWrapperProps
 ) => {
   return (
-    <Card className='w-[400px] shadow-md'>
+    <Card className="auth-card-wrapper">
       <CardHeader>
         <AuthCardHeader label={headerLabel} />
       </CardHeader>

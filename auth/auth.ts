@@ -111,7 +111,7 @@ export const { auth, signIn, signOut, unstable_update, handlers: { GET, POST } }
     GoogleProvider({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
-      /* allowDangerousEmailAccountLinking: true */
+      allowDangerousEmailAccountLinking: true
     })
   ]
 })
