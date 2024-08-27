@@ -33,7 +33,7 @@ const SettingsPage = () => {
       name: user?.name || '',
       email: user?.email || '',
       role: user?.role as UserRole,
-      twoFactorEnabled: user?.twoFactorEnabled || false,
+      twoFactorEnabled: user?.twoFactorEnabled,
     }
   });
 

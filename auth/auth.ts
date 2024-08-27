@@ -55,7 +55,7 @@ export const { auth, signIn, signOut, unstable_update, handlers: { GET, POST } }
       token.name = existingUser.name;
       token.email = existingUser.email;
       token.role = existingUser.role;
-      token.isTwoFactorEnabled = existingUser.twoFactorEnabled;
+      token.twoFactorEnabled = existingUser.twoFactorEnabled;
 
       return token;
     },
@@ -70,7 +70,7 @@ export const { auth, signIn, signOut, unstable_update, handlers: { GET, POST } }
 
 
       if (session.user) {
-        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+        session.user.twoFactorEnabled = token.twoFactorEnabled as boolean;
       }
 
       if (session.user) {
