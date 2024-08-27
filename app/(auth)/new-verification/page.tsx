@@ -1,7 +1,7 @@
 import VerifyEmailComponent from '@/components/auth/VerifyEmailComponent';
 import React, { Suspense } from 'react'
 
-const NewVerificationPage = () => {
+const NewVerification = () => {
   return (
     <Suspense>
       <VerifyEmailComponent />
@@ -9,4 +9,4 @@ const NewVerificationPage = () => {
   )
 }
 
-export default NewVerificationPage
+export default NewVerification

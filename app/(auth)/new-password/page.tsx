@@ -1,7 +1,7 @@
 import NewPasswordForm from '@/components/auth/NewPasswordForm'
 import React, { Suspense } from 'react'
 
-const ResetPage = () => {
+const NewPassword = () => {
   return (
     <Suspense>
       <NewPasswordForm />
@@ -9,4 +9,4 @@ const ResetPage = () => {
   )
 }
 
-export default ResetPage
+export default NewPassword
