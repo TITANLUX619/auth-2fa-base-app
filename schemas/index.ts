@@ -27,31 +27,42 @@ export const newPasswordFormSchema =
     newPassword: z.string().min(8),
   });
 
-export const settingsSchema = z.object({
-  name: z.optional(z.string()),
-  twoFactorEnabled: z.optional(z.boolean()),
-  role: z.enum([UserRole.ADMIN, UserRole.USER]),
-  email: z.optional(z.string().email()),
-  password: z.optional(z.string().min(6)),
-  newPassword: z.optional(z.string().min(6)),
-})
-  .refine((data) => {
+export const settingsSchema = z
+  .object({
+    name: z.string().optional(),
+    twoFactorEnabled: z.boolean().optional(),
+    role: z.enum([UserRole.ADMIN, UserRole.USER]).optional(),
+    email: z.string().optional().refine((value) => {
+      return !value || z.string().email().safeParse(value).success;
+    }, {
+      message: "Please provide a valid email address",
+    }),
+    password: z.string().optional().refine((value) => {
+      return !value || value.length >= 6;
+    }, {
+      message: "Password must be at least 6 characters long",
+    }),
+    newPassword: z.string().optional().refine((value) => {
+      return !value || value.length >= 6;
+    }, {
+      message: "New password must be at least 6 characters long",
+    }),
+  })
+  .superRefine((data, ctx) => {
     if (data.password && !data.newPassword) {
-      return false;
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "New password is required when changing password",
+        path: ["newPassword"],
+      });
     }
 
-    return true;
-  }, {
-    message: "New password is required!",
-    path: ["newPassword"]
-  })
-  .refine((data) => {
     if (data.newPassword && !data.password) {
-      return false;
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Current password is required to set a new password",
+        path: ["password"],
+      });
     }
+  });
 
-    return true;
-  }, {
-    message: "Password is required!",
-    path: ["password"]
-  })

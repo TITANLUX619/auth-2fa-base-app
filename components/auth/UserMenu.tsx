@@ -5,14 +5,15 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { FaUser } from 'react-icons/fa'
 import SignOutButton from './SignOutButton'
-import { Button } from '../ui/button'
 import { useRouter } from 'next/navigation'
-import { ExitIcon } from '@radix-ui/react-icons'
+import { ExitIcon, GearIcon } from '@radix-ui/react-icons'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 
 const UserMenu = () => {
   const user = useCurrentUser()
   const router = useRouter()
+
+  console.log(user)
 
   return (
     <DropdownMenu>
@@ -25,22 +26,17 @@ const UserMenu = () => {
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem>
-          <Button
-            className='w-full font-normal'
-            size='sm'
-            onClick={() => { router.push('/settings') }}
-          >
-            <p>
-              User Menu
-            </p>
-          </Button>
-        </DropdownMenuItem>
+      <DropdownMenuContent align='end' className='mt-1'>
+        <div onClick={() => router.push('/settings')} >
+          <DropdownMenuItem className='cursor-pointer'>
+            <GearIcon className='w-4 h-4 mr-2' />
+            User Menu
+          </DropdownMenuItem>
+        </div>
         <SignOutButton>
           <DropdownMenuItem className='cursor-pointer'>
             <ExitIcon className='w-4 h-4 mr-2' />
-            Log Out
+            <p className='text-red-900'>Log Out</p>
           </DropdownMenuItem>
         </SignOutButton>
       </DropdownMenuContent>

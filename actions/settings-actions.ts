@@ -25,12 +25,12 @@ export const settings = async (
     return { error: "Unauthorized" }
   }
 
-  if (user.isOAuth) {
-    values.email = undefined;
-    values.password = undefined;
-    values.newPassword = undefined;
-    values.twoFactorEnabled = undefined;
-  }
+  /*   if (user.isOAuth) {
+      values.email = undefined;
+      values.password = undefined;
+      values.newPassword = undefined;
+      values.twoFactorEnabled = undefined;
+    } */
 
   if (values.email && values.email !== user.email) {
     const existingUser = await getUserByEmail(values.email);
@@ -67,6 +67,14 @@ export const settings = async (
     values.password = hashedPassword;
     values.newPassword = undefined;
   }
+
+  Object.keys(values).forEach((key) => {
+
+    if (values[key as keyof z.infer<typeof settingsSchema>] as string === '') {
+
+      values[key as keyof z.infer<typeof settingsSchema>] = undefined;
+    }
+  });
 
   const updatedUser = await prisma.user.update({
     where: { id: dbUser.id },

@@ -29,4 +29,5 @@ export const defaultAuthFormValues = {
   ssn: "",
   email: "",
   password: "",
+  twoFactorCode: "",
 }
