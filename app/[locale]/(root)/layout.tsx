@@ -1,6 +1,6 @@
 import { SessionProvider } from 'next-auth/react';
 import { auth } from '@/auth/auth';
-import '../globals.css';
+import '@/app/globals.css';
 import Navbar from '@/components/Navbar';
 import { Suspense } from 'react';
 

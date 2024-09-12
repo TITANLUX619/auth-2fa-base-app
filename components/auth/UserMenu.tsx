@@ -8,6 +8,7 @@ import SignOutButton from './SignOutButton'
 import { useRouter } from 'next/navigation'
 import { ExitIcon, GearIcon } from '@radix-ui/react-icons'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
+import LanguageSelector from '../LanguageSelector'
 
 const UserMenu = () => {
   const user = useCurrentUser()
@@ -26,6 +27,8 @@ const UserMenu = () => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='mt-1'>
+        <LanguageSelector />
+
         <div onClick={() => router.push('/settings')} >
           <DropdownMenuItem className='cursor-pointer'>
             <GearIcon className='w-4 h-4 mr-2' />

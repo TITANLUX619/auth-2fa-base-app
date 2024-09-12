@@ -6,6 +6,7 @@ import { RxHalf2 } from "react-icons/rx";
 const DarkModeButton = () => {
   const [dark, setDark] = useState(false)
 
+
   React.useEffect(() => {
     const isDarkMode = localStorage.getItem('theme') === 'dark';
     if (isDarkMode) {
@@ -32,3 +33,5 @@ const DarkModeButton = () => {
     />
   )
 }
+
+export default DarkModeButton

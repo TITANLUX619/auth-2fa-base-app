@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-import { useRouter } from 'next/navigation'
 import UserMenuButton from './auth/UserMenu'
+import { useRouter } from '@/i18n/routing'
 
 const Navbar = () => {
   const router = useRouter()

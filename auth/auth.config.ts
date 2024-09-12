@@ -1,5 +1,6 @@
-import { NextAuthConfig } from "next-auth"
+import { NextAuthConfig, Session } from "next-auth"
 import { apiAuthPrefix, authRoutes, DEFAULT_SIGN_IN_REDIRECT, DEFAULT_SIGN_OUT_REDIRECT, publicRoutes } from "@/lib/constants/routes";
+import { NextRequest } from "next/server";
 
 export const authConfig = {
   secret: process.env.AUTH_SECRET,
@@ -8,11 +9,19 @@ export const authConfig = {
     newUser: '/sign-up'
   },
   callbacks: {
-    async authorized({ auth, request: { nextUrl } }: { auth: any, request: { nextUrl: any } }) {
+    async authorized({ auth, request: { nextUrl } }: { auth: Session | null, request: NextRequest }) {
       const isLoggedIn = !!auth
       const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
-      const isAuthRoute = authRoutes.includes(nextUrl.pathname)
-      const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
+      const isAuthRoute = authRoutes.some(
+        route =>
+          nextUrl.pathname.endsWith(route)
+          || nextUrl.pathname.includes(`/en${route}`)
+          || nextUrl.pathname.includes(`/es${route}`))
+      const isPublicRoute = publicRoutes.some(
+        route =>
+          nextUrl.pathname.endsWith(route)
+          || nextUrl.pathname.includes(`/en${route}`)
+          || nextUrl.pathname.includes(`/es${route}`))
 
       if (isApiAuthRoute) {
         return true

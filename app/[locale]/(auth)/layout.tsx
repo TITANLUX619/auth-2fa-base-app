@@ -1,5 +1,5 @@
 import AuthHeader from '@/components/auth/AuthCardHeader';
-import '../globals.css'
+import '@/app/globals.css'
 
 export default function AuthLayout({
   children,

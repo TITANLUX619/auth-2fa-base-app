@@ -1,11 +1,12 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 
 export default function GoogleLoginButton() {
-
     const router = useRouter();
+    const t = useTranslations();
 
     const handleGoogleSignIn = async () => {
         try {
@@ -50,7 +51,7 @@ export default function GoogleLoginButton() {
                     fill="#1976D2"
                 />
             </svg>
-            Sign in with Google
+            {t('auth.signinWithGoogle')}
         </button>
     );
 }

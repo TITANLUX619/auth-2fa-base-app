@@ -4,13 +4,12 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useTransition } from "react";
-
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
-import { Card, CardHeader, CardContent, } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { settings } from "@/actions/settings-actions";
-import { Form, FormField, FormControl, FormItem, FormLabel, FormDescription, FormMessage, } from "@/components/ui/form";
+import { Form, FormField, FormControl, FormItem, FormLabel, FormDescription, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UserRole } from "@prisma/client";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
@@ -18,10 +17,11 @@ import { useSession } from "next-auth/react";
 import { settingsSchema } from "@/schemas";
 import { toast } from "sonner";
 import { currentRole } from "@/actions/user-actions";
+import { useTranslations } from "next-intl";
 
 const SettingsPage = () => {
   const user = useCurrentUser();
-
+  const t = useTranslations("settings"); // Use 'settings' namespace
   const { update } = useSession();
   const [isPending, startTransition] = useTransition();
 
@@ -41,12 +41,12 @@ const SettingsPage = () => {
     currentRole()
       .then((response) => {
         if (response === UserRole.ADMIN) {
-          toast.success("User is ADMIN!");
+          toast.success(t("adminToast"));
         } else {
-          toast.error("User is USER!");
+          toast.error(t("userToast"));
         }
       })
-  }, []);
+  }, [t]);
 
   const onSubmit = (values: z.infer<typeof settingsSchema>) => {
     startTransition(() => {
@@ -61,7 +61,7 @@ const SettingsPage = () => {
             toast.success(data.success);
           }
         })
-        .catch(() => toast.error("Something went wrong!"));
+        .catch(() => toast.error(t("loadingError")));
     });
   }
 
@@ -69,7 +69,7 @@ const SettingsPage = () => {
     <Card className="settings">
       <CardHeader>
         <p className="text-2xl font-semibold text-center">
-          ⚙️ Settings
+          {t("title")}
         </p>
       </CardHeader>
       <CardContent>
@@ -84,11 +84,11 @@ const SettingsPage = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>{t("nameLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="John Doe"
+                        placeholder={t("namePlaceholder")}
                         disabled={isPending}
                       />
                     </FormControl>
@@ -96,18 +96,16 @@ const SettingsPage = () => {
                   </FormItem>
                 )}
               />
-              {/*                 {user?.isOAuth === false && (
-                  <> */}
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t("emailLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="john.doe@example.com"
+                        placeholder={t("emailPlaceholder")}
                         type="email"
                         disabled={isPending}
                       />
@@ -121,11 +119,11 @@ const SettingsPage = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>{t("passwordLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="******"
+                        placeholder={t("passwordPlaceholder")}
                         type="password"
                         disabled={isPending}
                       />
@@ -139,11 +137,11 @@ const SettingsPage = () => {
                 name="newPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>New Password</FormLabel>
+                    <FormLabel>{t("newPasswordLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="******"
+                        placeholder={t("newPasswordPlaceholder")}
                         type="password"
                         disabled={isPending}
                       />
@@ -152,14 +150,12 @@ const SettingsPage = () => {
                   </FormItem>
                 )}
               />
-              {/*                   </>
-                )} */}
               <FormField
                 control={form.control}
                 name="role"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Role</FormLabel>
+                    <FormLabel>{t("roleLabel")}</FormLabel>
                     <Select
                       disabled={isPending}
                       onValueChange={field.onChange}
@@ -167,15 +163,15 @@ const SettingsPage = () => {
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a role" />
+                          <SelectValue placeholder={t("rolePlaceholder")} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value={UserRole.ADMIN}>
-                          Admin
+                          {t("roleAdmin")}
                         </SelectItem>
                         <SelectItem value={UserRole.USER}>
-                          User
+                          {t("roleUser")}
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -183,16 +179,15 @@ const SettingsPage = () => {
                   </FormItem>
                 )}
               />
-              {/* {user?.isOAuth === false && (*/}
               <FormField
                 control={form.control}
                 name="twoFactorEnabled"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
                     <div className="space-y-0.5">
-                      <FormLabel>Two Factor Authentication</FormLabel>
+                      <FormLabel>{t("twoFactorLabel")}</FormLabel>
                       <FormDescription>
-                        Enable two factor authentication for your account
+                        {t("twoFactorDescription")}
                       </FormDescription>
                     </div>
                     <FormControl>
@@ -205,13 +200,12 @@ const SettingsPage = () => {
                   </FormItem>
                 )}
               />
-              {/*  )} */}
             </div>
             <Button
               disabled={isPending}
               type="submit"
             >
-              Save
+              {t("saveButton")}
             </Button>
           </form>
         </Form>

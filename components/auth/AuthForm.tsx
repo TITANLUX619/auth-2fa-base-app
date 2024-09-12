@@ -1,33 +1,33 @@
-'use client'
+'use client';
 
-import React, { useEffect, useTransition } from 'react'
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Form } from "@/components/ui/form"
-import { Button } from "@/components/ui/button"
-import { useForm } from "react-hook-form"
+import React, { useTransition } from 'react';
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
 import { authFormSchema } from '@/schemas';
 import { Loader2 } from 'lucide-react';
 import { defaultAuthFormValues } from '@/lib/utils';
 import AuthCardWrapper from './AuthCardWrapper';
 import AuthInput from './AuthInput';
 import { signIn, signUp } from '@/actions/auth-actions';
-import { toast } from 'sonner'
-import useToast from '@/hooks/useToast'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import useToast from '@/hooks/useToast';
+import { Link, useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 const AuthForm = ({ type }: AuthFormProps) => {
-  const router = useRouter()
+  const router = useRouter();
   const formSchema = authFormSchema(type);
   const [isPending, startTransition] = useTransition();
-  const [show2FA, setShow2FA] = React.useState(false)
+  const [show2FA, setShow2FA] = React.useState(false);
   const addToast = useToast();
+  const t = useTranslations(); // Utiliza el namespace 'auth'
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultAuthFormValues,
-  })
+  });
 
   async function onSubmit(formData: z.infer<typeof formSchema>) {
     try {
@@ -40,18 +40,16 @@ const AuthForm = ({ type }: AuthFormProps) => {
           postalCode: formData.postalCode!,
           dateOfBirth: formData.dateOfBirth!,
           email: formData.email,
-          password: formData.password
-        }
+          password: formData.password,
+        };
 
         startTransition(async () => {
-          const result = await signUp(userData)
+          const result = await signUp(userData);
 
-          addToast({ type: result?.type, message: result?.message })
+          addToast({ type: result?.type, message: result?.message });
 
-          if (result.type === 'info') router.push('/sign-in')
-
-        })
-
+          if (result.type === 'info') router.push('/sign-in');
+        });
       }
 
       if (type === 'sign-in') {
@@ -59,32 +57,30 @@ const AuthForm = ({ type }: AuthFormProps) => {
           const result = await signIn({
             email: formData.email,
             password: formData.password,
-            twoFactorCode: formData['twoFactorCode']
-          })
+            twoFactorCode: formData['twoFactorCode'],
+          });
 
-          addToast({ type: result?.type, message: result?.message })
+          addToast({ type: result?.type, message: result?.message });
 
           if (result.data?.twoFactorEnabled) {
-            setShow2FA(true)
+            setShow2FA(true);
           }
 
-          if (result.type === 'success') router.push('/')
-
-        })
+          if (result.type === 'success') router.push('/');
+        });
       }
-
     } catch (error) {
       console.log(error);
     }
   }
 
-  const authButtonLabel = type === 'sign-up' ? 'Sign up' : show2FA ? 'Send code' : 'Sign in'
+  const authButtonLabel = type === 'sign-up' ? t('auth.signup') : show2FA ? t('auth.sendCode') : t('auth.signin');
 
   return (
     <section className="auth-form">
       <AuthCardWrapper
-        headerLabel='Welcome back'
-        backbuttonLabel={type === 'sign-in' ? 'Don’t have an account? Sign up' : 'Already have an account? Sign in'}
+        headerLabel={t('auth.welcome')}
+        backbuttonLabel={type === 'sign-in' ? t('auth.dontHaveAccount') : t('auth.alreadyHaveAccount')}
         backButtonHref={type === 'sign-in' ? '/sign-up' : '/sign-in'}
         showSocial
       >
@@ -97,8 +93,8 @@ const AuthForm = ({ type }: AuthFormProps) => {
                   control={form.control}
                   type='text'
                   name='firstName'
-                  label="First Name"
-                  placeholder='Enter your first name'
+                  label={t('auth.firstName')}
+                  placeholder={t('auth.firstName')}
                   disabled={isPending}
                 />
                 <AuthInput
@@ -106,8 +102,8 @@ const AuthForm = ({ type }: AuthFormProps) => {
                   control={form.control}
                   type='text'
                   name='lastName'
-                  label="Last Name"
-                  placeholder='Enter your first name'
+                  label={t('auth.lastName')}
+                  placeholder={t('auth.lastName')}
                   disabled={isPending}
                 />
                 <AuthInput
@@ -115,8 +111,8 @@ const AuthForm = ({ type }: AuthFormProps) => {
                   control={form.control}
                   type='text'
                   name='address1'
-                  label="Address"
-                  placeholder='Enter your specific address'
+                  label={t('auth.address')}
+                  placeholder={t('auth.address')}
                   disabled={isPending}
                 />
                 <AuthInput
@@ -124,8 +120,8 @@ const AuthForm = ({ type }: AuthFormProps) => {
                   control={form.control}
                   type='text'
                   name='city'
-                  label="City"
-                  placeholder='Enter your city'
+                  label={t('auth.city')}
+                  placeholder={t('auth.city')}
                   disabled={isPending}
                 />
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -135,8 +131,8 @@ const AuthForm = ({ type }: AuthFormProps) => {
                       control={form.control}
                       type='text'
                       name='postalCode'
-                      label="Postal Code"
-                      placeholder='Enter your specific Postal Code'
+                      label={t('auth.zip')}
+                      placeholder={t('auth.zip')}
                       disabled={isPending}
                     />
                   </div>
@@ -153,8 +149,8 @@ const AuthForm = ({ type }: AuthFormProps) => {
                 </div>
               </>
             )}
-            {show2FA
-              ? <AuthInput
+            {show2FA ? (
+              <AuthInput
                 id='signin-2fa-code'
                 control={form.control}
                 type='text'
@@ -163,46 +159,45 @@ const AuthForm = ({ type }: AuthFormProps) => {
                 placeholder='Enter code'
                 disabled={isPending}
               />
-              : (
-                <>
+            ) : (
+              <>
+                <AuthInput
+                  id='signin-email'
+                  control={form.control}
+                  type='text'
+                  name='email'
+                  label={t('auth.email')}
+                  placeholder={t('auth.emailPlaceHolder')}
+                  disabled={isPending}
+                />
+                <div>
                   <AuthInput
-                    id='signin-email'
+                    id='signin-password'
                     control={form.control}
-                    type='text'
-                    name='email'
-                    label="Email"
-                    placeholder='Enter your email'
+                    type='password'
+                    name='password'
+                    label={t('auth.password')}
+                    placeholder={t('auth.password')}
                     disabled={isPending}
                   />
-                  <div>
-                    <AuthInput
-                      id='signin-password'
-                      control={form.control}
-                      type='password'
-                      name='password'
-                      label="Password"
-                      placeholder='Enter your password'
-                      disabled={isPending}
-                    />
-                    <Button
-                      size='sm'
-                      variant='link'
-                      asChild
-                    >
-                      <Link href='/reset-password' onClick={() => console.log('Back')}
-                      >
-                        Forgot password?
-                      </Link>
-                    </Button>
-                  </div>
-                </>
-              )}
+                  <Button
+                    size='sm'
+                    variant='link'
+                    asChild
+                  >
+                    <Link href='/reset-password' onClick={() => console.log('Back')}>
+                      {t('auth.forgotPassword')}
+                    </Link>
+                  </Button>
+                </div>
+              </>
+            )}
             <div className="flex flex-col gap-4">
               <Button type="submit" onClick={() => onSubmit(form.getValues())} disabled={isPending}>
                 {isPending ? (
                   <>
                     <Loader2 size={20} className="animate-spin" /> &nbsp;
-                    Loading...
+                    {t('loading')}
                   </>
                 ) : authButtonLabel}
               </Button>
@@ -211,7 +206,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
         </Form>
       </AuthCardWrapper>
     </section>
-  )
-}
+  );
+};
 
-export default AuthForm
+export default AuthForm;

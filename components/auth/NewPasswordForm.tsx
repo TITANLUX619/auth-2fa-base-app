@@ -13,6 +13,7 @@ import AuthInput from './AuthInput';
 import { setNewPassword } from '@/actions/auth-actions';
 import useToast from '@/hooks/useToast'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 const NewPasswordForm = () => {
   const router = useRouter()
@@ -20,6 +21,7 @@ const NewPasswordForm = () => {
   const searchParams = useSearchParams()
   const token = searchParams.get('token') || undefined
   const addToast = useToast();
+  const t = useTranslations();
 
   const form = useForm<z.infer<typeof newPasswordFormSchema>>({
     resolver: zodResolver(newPasswordFormSchema),
@@ -48,8 +50,8 @@ const NewPasswordForm = () => {
   return (
     <div>
       <AuthCardWrapper
-        headerLabel='Enter your new password'
-        backbuttonLabel='Back to sign in'
+        headerLabel={t('auth.enterYourNewPassword')}
+        backbuttonLabel={t('auth.backToSignin')}
         backButtonHref='/sign-in'
       >
         <Form {...form}>
@@ -68,9 +70,9 @@ const NewPasswordForm = () => {
                 {isPending ? (
                   <>
                     <Loader2 size={20} className="animate-spin" /> &nbsp;
-                    Loading...
+                    {t('loading')}
                   </>
-                ) : 'Reset passworld'}
+                ) : t('auth.resetPassword')}
               </Button>
             </div>
           </form>

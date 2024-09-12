@@ -13,11 +13,13 @@ import AuthInput from './AuthInput';
 import { resetPassword } from '@/actions/auth-actions';
 import useToast from '@/hooks/useToast'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 const ResetPasswordForm = () => {
   const router = useRouter()
   const [isPending, startTransition] = useTransition();
   const addToast = useToast();
+  const t = useTranslations();
 
   const form = useForm<z.infer<typeof resetPasswordFormSchema>>({
     resolver: zodResolver(resetPasswordFormSchema),
@@ -42,10 +44,10 @@ const ResetPasswordForm = () => {
   }
 
   return (
-    <div>
+    <section className="auth-form">
       <AuthCardWrapper
-        headerLabel='Reset your password'
-        backbuttonLabel='Back to sign in'
+        headerLabel={t('auth.resetYourPassword')}
+        backbuttonLabel={t('auth.backToSignin')}
         backButtonHref='/sign-in'
       >
         <Form {...form}>
@@ -55,8 +57,8 @@ const ResetPasswordForm = () => {
               control={form.control}
               type='text'
               name='email'
-              label="Email"
-              placeholder='Enter your email'
+              label={t('auth.email')}
+              placeholder={t('auth.emailPlaceHolder')}
               disabled={isPending}
             />
             <div className="flex flex-col gap-4">
@@ -64,15 +66,15 @@ const ResetPasswordForm = () => {
                 {isPending ? (
                   <>
                     <Loader2 size={20} className="animate-spin" /> &nbsp;
-                    Loading...
+                    {t('loading')}
                   </>
-                ) : 'Send reset email'}
+                ) : t('auth.sendResetEmail')}
               </Button>
             </div>
           </form>
         </Form>
       </AuthCardWrapper>
-    </div>
+    </section>
   )
 }
 
